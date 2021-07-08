@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>DRACOLoader three.js demo</title>
+		<style>
+			body { margin: 0; }
+		</style>
+	</head>
+	<body>
+		<script type="module">
+
+			//-- Bill Derksen - 7/2021
+			//
+			//		- ThreeJS DRACOLoader demo for quick loading of large (compressed) 3D models
+			//      - Includes...
+			//			- examples for loading and rendering .drc point clouds and textured meshes
+			//          - orbit controls to move loaded models around in space
+    
+			//-- Local Node Imports
+			//import * as THREE from './node_modules/three/build/three.module.js';
+			//import {DRACOLoader} from './node_modules/three/examples/jsm/loaders/DRACOLoader.js';
+			//import {OrbitControls} from './node_modules/three/examples/jsm/controls/OrbitControls.js';
+
+			//-- CDN Imports...
+			import * as THREE from 'https://cdn.skypack.dev/three@0.130.1';
+			import {DRACOLoader} from 'https://cdn.skypack.dev/three@0.130.1/examples/jsm/loaders/DRACOLoader.js';
+			//import {OBJLoader} from 'https://cdn.skypack.dev/three@0.130.1/examples/jsm/loaders/OBJLoader.js';
+			import {OrbitControls} from 'https://cdn.skypack.dev/three@0.130.1/examples/jsm/controls/OrbitControls.js';
+			
+
+			//-- Prime scene and camera
+			const scene = new THREE.Scene();
+			scene.background = new THREE.Color( 0x443333 );
+			const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+			
+			//-- Prime texture loader
+			const texture = new THREE.TextureLoader().load( 'MI-085L.jpg' );
+
+			//-- Prime renderer
+			const renderer = new THREE.WebGLRenderer();
+			renderer.setSize( window.innerWidth, window.innerHeight );
+			document.body.appendChild( renderer.domElement );
+
+			//-- Prime orbit controls
+			const controls = new OrbitControls(camera, renderer.domElement);
+
+			//-- Prime OBJLoader
+       		//const loader = new OBJLoader();
+
+			//-- Prime Draco loader
+			const loader = new DRACOLoader();
+			loader.setDecoderConfig({ type: 'js' });
+			loader.setDecoderPath('https://www.gstatic.com/draco/v1/decoders/');
+			//loader.setDecoderPath('./node_modules/three/examples/js/libs/draco/');
+			
+			// optional: pre-fetch Draco WASM/JS module..
+			//loader.preload();
+
+			//-- Load geometry
+			//--- Files: ML-085.obj, RZ-ML-085.drc, RZ-ML-085_PC.drc
+			loader.load('RZ-ML-085.drc', 
+				function (geometry){
+
+					//-- Point Cloud
+					/*
+					const material = new THREE.PointsMaterial( { color: 0x00ff00, size: 0.001} );
+					const points = new THREE.Points( geometry, material );
+					points.scale.set(20, 20, 20);
+					points.visible = true;
+					scene.add( points );
+					*/
+
+					//-- DRACOLoader - mesh
+					//const material = new THREE.MeshStandardMaterial( { color: 0x00ff00 } );
+					const material = new THREE.MeshBasicMaterial( { map: texture, side: THREE.DoubleSide } );
+					const mesh = new THREE.Mesh( geometry, material );
+					mesh.scale.set(20, 20, 20);
+					mesh.visible = true;
+					scene.add( mesh );
+					
+					//-- OBJLoader - mesh already brought in by OBJLoader
+					/*
+					const material = new THREE.MeshBasicMaterial( { map: texture, side: THREE.DoubleSide } );
+					geometry.traverse((child) => {
+                	if (child instanceof THREE.Mesh) {
+                  		// eslint-disable-next-line no-param-reassign
+                 		 child.material.metalness = 0;
+                		}
+              		});
+              		geometry.traverse((child) => {
+                		if (child instanceof THREE.Mesh) {
+                  		// eslint-disable-next-line no-param-reassign
+                  		child.material = material;
+                		}
+              		});
+					geometry.scale.set(20, 20, 20);
+					geometry.visible = true;
+					scene.add( geometry );
+					*/
+
+					animate();
+				},						
+				// called as loading progresses
+				function ( xhr ) {
+					console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
+				},
+				// called when loading has errors
+				function ( error ) {
+					console.log( 'An error happened' );
+				}
+			);
+
+			//-- Prime cube to render
+			const geometry = new THREE.BoxGeometry();
+			const material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
+			const cube = new THREE.Mesh( geometry, material );
+			//scene.add( cube );
+
+			camera.position.z = 5;
+			controls.update();
+
+			//-- Render function/loop
+			function animate() {
+				requestAnimationFrame( animate );
+
+				//-- Rotate cube
+				//cube.rotation.x += 0.01;
+				//cube.rotation.y += 0.01;
+
+				controls.update();
+				renderer.render( scene, camera );
+				console.log( 'In animation loop...');
+			}
+			
+
+		</script>
+	</body>
+</html>
