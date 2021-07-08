@@ -12,10 +12,10 @@
 
 			//-- Bill Derksen - 7/2021
 			//
-			//		- ThreeJS DRACOLoader demo for quick loading of large (compressed) 3D models
+			//	- ThreeJS DRACOLoader demo for quick loading of large (compressed) 3D models
 			//      - Includes...
-			//			- examples for loading and rendering .drc point clouds and textured meshes
-			//          - orbit controls to move loaded models around in space
+			//		- examples for loading and rendering .drc point clouds and textured meshes
+			//          	- orbit controls to move loaded models around in space
     
 			//-- Local Node Imports
 			//import * as THREE from './node_modules/three/build/three.module.js';
@@ -46,7 +46,7 @@
 			const controls = new OrbitControls(camera, renderer.domElement);
 
 			//-- Prime OBJLoader
-       		//const loader = new OBJLoader();
+       			//const loader = new OBJLoader();
 
 			//-- Prime Draco loader
 			const loader = new DRACOLoader();
@@ -83,17 +83,17 @@
 					/*
 					const material = new THREE.MeshBasicMaterial( { map: texture, side: THREE.DoubleSide } );
 					geometry.traverse((child) => {
-                	if (child instanceof THREE.Mesh) {
-                  		// eslint-disable-next-line no-param-reassign
-                 		 child.material.metalness = 0;
-                		}
-              		});
-              		geometry.traverse((child) => {
-                		if (child instanceof THREE.Mesh) {
-                  		// eslint-disable-next-line no-param-reassign
-                  		child.material = material;
-                		}
-              		});
+                				if (child instanceof THREE.Mesh) {
+                  					// eslint-disable-next-line no-param-reassign
+                 				 	child.material.metalness = 0;
+                				}
+              				});
+              				geometry.traverse((child) => {
+                				if (child instanceof THREE.Mesh) {
+                  					// eslint-disable-next-line no-param-reassign
+                  					child.material = material;
+                				}
+              				});
 					geometry.scale.set(20, 20, 20);
 					geometry.visible = true;
 					scene.add( geometry );
